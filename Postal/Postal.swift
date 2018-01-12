@@ -30,6 +30,7 @@ open class Postal {
     fileprivate let session: IMAPSession
     fileprivate let queue: OperationQueue
     fileprivate let configuration: Configuration
+    fileprivate let postalDispatchQueue: DispatchQueue = DispatchQueue(label: "ai.snips.Postal.postalDispatchQueue")
 
     /// Setting this variable will allow user to access to the internal logger.
     open var logger: Logger? {
@@ -271,7 +272,7 @@ private extension Postal {
     func doAsync<T, E>(_ f: @escaping () throws -> T, completion: @escaping (Result<T, E>) -> Void) {
         queue.addOperation {
             let result = Result<T, E>(attempt: f)
-            DispatchQueue.main.async {
+            self.postalDispatchQueue.async {
                 completion(result)
             }
         }
@@ -281,16 +282,16 @@ private extension Postal {
         queue.addOperation {
             do {
                 try f() { item in
-                    DispatchQueue.main.async {
+                    self.postalDispatchQueue.async {
                         onItem(item)
                     }
                 }
                 
-                DispatchQueue.main.async {
+                self.postalDispatchQueue.async {
                     onComplete(nil)
                 }
             } catch let error as E {
-                DispatchQueue.main.async {
+                self.postalDispatchQueue.async {
                     onComplete(error)
                 }
             } catch {
