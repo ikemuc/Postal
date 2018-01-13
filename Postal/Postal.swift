@@ -30,7 +30,7 @@ open class Postal {
     fileprivate let session: IMAPSession
     fileprivate let queue: OperationQueue
     fileprivate let configuration: Configuration
-    fileprivate let postalDispatchQueue: DispatchQueue = DispatchQueue(label: "ai.snips.Postal.postalDispatchQueue")
+    fileprivate let postalDispatchQueue: DispatchQueue = DispatchQueue(label: "de.agile-mindshift.postal.postalDispatchQueue")
 
     /// Setting this variable will allow user to access to the internal logger.
     open var logger: Logger? {
